@@ -406,8 +406,9 @@ GameObject:
   - component: {fileID: 2564194913027060002}
   - component: {fileID: 40447524646301413}
   - component: {fileID: -978423583521731319}
-  - component: {fileID: 6094989187069390775}
   - component: {fileID: 6940437460400053715}
+  - component: {fileID: 6094989187069390775}
+  - component: {fileID: -4603227257176070383}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -444,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4136163740
+  GlobalObjectIdHash: 498223428
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -484,23 +485,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &6094989187069390775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5902978589847443340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b068f337bf7ac4824bac9f280748d907, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inputReader: {fileID: 11400000, guid: 046c0385ff78e4ea1ada8855a855279f, type: 2}
-  bodyTransform: {fileID: 506472087720458995}
-  rb: {fileID: 6940437460400053715}
-  moveSpeed: 5
-  turnRate: 270
 --- !u!50 &6940437460400053715
 Rigidbody2D:
   serializedVersion: 4
@@ -528,3 +512,34 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &6094989187069390775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5902978589847443340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b068f337bf7ac4824bac9f280748d907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputReader: {fileID: 11400000, guid: 046c0385ff78e4ea1ada8855a855279f, type: 2}
+  bodyTransform: {fileID: 506472087720458995}
+  rb: {fileID: 6940437460400053715}
+  moveSpeed: 5
+  turnRate: 270
+--- !u!114 &-4603227257176070383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5902978589847443340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75de24e1afb5f485abaeb208249982ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turretTransform: {fileID: 1363552301125717459}
+  inputReader: {fileID: 11400000, guid: 046c0385ff78e4ea1ada8855a855279f, type: 2}
