@@ -77,8 +77,13 @@ public class ProjectileLauncher : NetworkBehaviour
     {
         GameObject projectileInstance = Instantiate(serverProjectilePrefab, spawnPos, Quaternion.identity);
         projectileInstance.transform.up = direction;
-
         Physics2D.IgnoreCollision(projectileInstance.GetComponent<Collider2D>(), playerCollider);
+
+        if (projectileInstance.TryGetComponent<DealDamageOnContact>(out DealDamageOnContact damageDealer))
+        {
+            damageDealer.SetOwner(OwnerClientId);
+        }
+        
         SpawnDummyProjectileClientRpc(spawnPos, direction);
         if (projectileInstance.TryGetComponent(out Rigidbody2D rb))
         {
