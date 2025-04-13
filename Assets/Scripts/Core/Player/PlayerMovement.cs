@@ -12,50 +12,38 @@ public class PlayerMovement : NetworkBehaviour
 
     [Header("Settings")]
     [SerializeField] private float moveSpeed = 4f;
-    [SerializeField] private float turnRate = 30f;
+    [SerializeField] private float rotationSpeed = 10f; // degrees per second
 
     private Vector2 previousMoveInput;
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
-        {
-            return;
-        }
+        if (!IsOwner) return;
         inputReader.MoveEvent += HandleMove;
-
     }
 
     public override void OnNetworkDespawn()
     {
-        if (!IsOwner)
-        {
-            return;
-        }
+        if (!IsOwner) return;
         inputReader.MoveEvent -= HandleMove;
-    }
-
-    private void Update()
-    {
-        if (!IsOwner)
-        {
-            return;
-        }
-        float zRotation =  previousMoveInput.x * -turnRate * Time.deltaTime * Mathf.Sign(previousMoveInput.y);
-        bodyTransform.Rotate(0f, 0f, zRotation);
     }
 
     private void FixedUpdate()
     {
-        if (!IsOwner)
+        if (!IsOwner) return;
+
+        rb.velocity = previousMoveInput * moveSpeed;
+
+        if (previousMoveInput != Vector2.zero)
         {
-            return;
+            float targetAngle = Mathf.Atan2(previousMoveInput.y, previousMoveInput.x) * Mathf.Rad2Deg - 90f;
+            Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
+            bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, targetRotation, rotationSpeed);
         }
-        rb.velocity = (Vector2)bodyTransform.up * previousMoveInput.y * moveSpeed;
     }
 
     private void HandleMove(Vector2 moveInput)
     {
-        previousMoveInput = moveInput;
+        previousMoveInput = moveInput.normalized;
     }
 }
