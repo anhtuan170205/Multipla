@@ -12,14 +12,16 @@ public class ProjectileLauncher : NetworkBehaviour
     [SerializeField] private InputReader inputReader;
     [SerializeField] private GameObject muzzleFlash;
     [SerializeField] private Collider2D playerCollider;
+    [SerializeField] private CoinWallet coinWallet;
 
     [Header("Settings")]
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float fireRate;
     [SerializeField] private float muzzleFlashDuration;
+    [SerializeField] private int costToFire;
 
+    private float fireRateTimer;
     private bool isFiring = false;
-    private float previousFireTime;
     private float muzzleFlashTimer;
 
     public override void OnNetworkSpawn()
@@ -54,17 +56,25 @@ public class ProjectileLauncher : NetworkBehaviour
         {
             return;
         }
+        if (fireRateTimer > 0)
+        {
+            fireRateTimer -= Time.deltaTime;
+        }
         if (!isFiring)
         {
             return;
         }
-        if (Time.time < (1 / fireRate) + previousFireTime)
+        if (fireRateTimer > 0)
+        {
+            return;
+        }
+        if (coinWallet.TotalCoins.Value < costToFire)
         {
             return;
         }
         PrimaryFireServerRpc(projectileSpawnPoint.position, projectileSpawnPoint.up);
         SpawnDummyProjectile(projectileSpawnPoint.position, projectileSpawnPoint.up);
-        previousFireTime = Time.time;
+        fireRateTimer = 1 / fireRate;
     }
 
     private void HandlePrimaryFire(bool isFiring)
@@ -75,6 +85,11 @@ public class ProjectileLauncher : NetworkBehaviour
     [ServerRpc]
     private void PrimaryFireServerRpc(Vector3 spawnPos, Vector3 direction)
     {
+        if (coinWallet.TotalCoins.Value < costToFire)
+        {
+            return;
+        }
+        coinWallet.SpendCoins(costToFire);
         GameObject projectileInstance = Instantiate(serverProjectilePrefab, spawnPos, Quaternion.identity);
         projectileInstance.transform.up = direction;
         Physics2D.IgnoreCollision(projectileInstance.GetComponent<Collider2D>(), playerCollider);
