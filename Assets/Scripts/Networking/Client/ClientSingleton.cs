@@ -5,28 +5,21 @@ using UnityEngine;
 
 public class ClientSingleton : MonoBehaviour
 {
-    private static ClientSingleton instance;
+    public static ClientSingleton Instance { get; private set; }
+
     public ClientGameManager ClientGameManager { get; private set; }
-    public static ClientSingleton Instance
+
+    private void Awake()
     {
-        get
+        if (Instance == null)
         {
-            if (instance != null)
-            {
-                return instance;
-            }
-            instance = FindObjectOfType<ClientSingleton>();
-            if (instance == null)
-            {
-                Debug.LogError("ClientSingleton instance not found in the scene.");
-                return null;
-            }
-            return instance;
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-    }
-    private void Start()
-    {
-        DontDestroyOnLoad(gameObject);
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public async Task<bool> CreateClient()
@@ -34,5 +27,5 @@ public class ClientSingleton : MonoBehaviour
         ClientGameManager = new ClientGameManager();
         return await ClientGameManager.InitAsync();
     }
-
 }
+

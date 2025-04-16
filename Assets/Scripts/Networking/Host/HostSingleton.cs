@@ -2,35 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Unity.Services.Core;
 
 public class HostSingleton : MonoBehaviour
 {
-    private static HostSingleton instance;
-    private HostGameManager hostGameManager;
-    public static HostSingleton Instance
-    {
-        get
-        {
-            if (instance != null)
-            {
-                return instance;
-            }
-            instance = FindObjectOfType<HostSingleton>();
-            if (instance == null)
-            {
-                Debug.LogError("HostSingleton instance not found in the scene.");
-                return null;
-            }
-            return instance;
-        }
-    }
-    private void Start()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
+    public static HostSingleton Instance { get; private set; }
+    public HostGameManager HostGameManager { get; private set; }
 
-    public void CreateHost()
+    private void Awake()
     {
-        hostGameManager = new HostGameManager();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            HostGameManager = new HostGameManager();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
