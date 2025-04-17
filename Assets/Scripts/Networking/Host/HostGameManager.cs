@@ -38,9 +38,13 @@ public class HostGameManager
             return;
         }
         UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        RelayServerData relayServerData = new RelayServerData(allocation, "udp");
+        RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
         unityTransport.SetRelayServerData(relayServerData);
         NetworkManager.Singleton.StartHost();
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
+    }
+    public string GetJoinCode()
+    {
+        return joinCode;
     }
 }
