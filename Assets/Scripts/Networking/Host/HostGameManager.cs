@@ -9,11 +9,14 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 
 public class HostGameManager
 {
     private Allocation allocation;
     private string joinCode;
+    private string lobbyId;
     private const string GameSceneName = "Game";
     private const int MaxConnections = 20;
     public async Task StartHostAsync()
@@ -40,11 +43,45 @@ public class HostGameManager
         UnityTransport unityTransport = NetworkManager.Singleton.GetComponent<UnityTransport>();
         RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
         unityTransport.SetRelayServerData(relayServerData);
+
+        try
+        {
+            CreateLobbyOptions lobbyOptions = new CreateLobbyOptions();
+            lobbyOptions.IsPrivate = false;
+            lobbyOptions.Data = new Dictionary<string, DataObject>
+            {
+                { "JoinCode", 
+                    new DataObject(
+                        visibility: DataObject.VisibilityOptions.Member,
+                        value: joinCode
+                    )
+                }
+            };
+            Lobby lobby = await Lobbies.Instance.CreateLobbyAsync("MyLobby", MaxConnections, lobbyOptions);
+            lobbyId = lobby.Id;
+            HostSingleton.Instance.StartCoroutine(HeartBeatLobby(15f));
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.LogError(e);
+            return;
+        }
+
         NetworkManager.Singleton.StartHost();
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
     }
     public string GetJoinCode()
     {
         return joinCode;
+    }
+
+    private IEnumerator HeartBeatLobby(float interval)
+    {
+        WaitForSecondsRealtime delay = new WaitForSecondsRealtime(interval);
+        while (true)
+        {
+            Lobbies.Instance.SendHeartbeatPingAsync(lobbyId);
+            yield return delay;
+        }
     }
 }
