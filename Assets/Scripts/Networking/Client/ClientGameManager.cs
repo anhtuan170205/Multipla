@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,10 +16,12 @@ using Unity.Services.Core;
 public class ClientGameManager
 {
     private const string MenuSceneName = "Menu";
+    private NetworkClient networkClient;
     private JoinAllocation joinAllocation;
     public async Task<bool> InitAsync()
     {
         await UnityServices.InitializeAsync();
+        networkClient = new NetworkClient(NetworkManager.Singleton);
         AuthState authState = await AuthenticationWrapper.DoAuth();
         if (authState == AuthState.Authenticated)
         {
@@ -49,7 +52,8 @@ public class ClientGameManager
 
         UserData userData = new UserData
         {
-            userName = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "MissingName")
+            userName = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"),
+            userAuthId = AuthenticationService.Instance.PlayerId
         };
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
