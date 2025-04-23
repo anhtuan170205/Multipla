@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 
-public class ClientGameManager
+public class ClientGameManager : IDisposable
 {
     private const string MenuSceneName = "Menu";
     private NetworkClient networkClient;
@@ -60,4 +60,9 @@ public class ClientGameManager
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         NetworkManager.Singleton.StartClient();
     }   
+    public void Dispose()
+    {
+        networkClient?.Dispose();
+        
+    }
 }

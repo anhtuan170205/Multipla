@@ -22,4 +22,8 @@ public class HostSingleton : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void OnDestroy()
+    {
+        HostGameManager?.Dispose();
+    }
 }
