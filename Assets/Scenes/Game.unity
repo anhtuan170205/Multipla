@@ -3452,6 +3452,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1093698827}
+  - component: {fileID: 1093698828}
   - component: {fileID: 1093698826}
   m_Layer: 0
   m_Name: GameHUD
@@ -3472,6 +3473,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6381e9fe497344c2f9a96019f3ac4cac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leaderboardEntityHolder: {fileID: 2058929984}
+  leaderboardEntityPrefab: {fileID: -3244870868889041376, guid: b6e2beeeb7cd744d191bc618beb839a2, type: 3}
 --- !u!4 &1093698827
 Transform:
   m_ObjectHideFlags: 0
@@ -3488,6 +3491,27 @@ Transform:
   - {fileID: 1041306436}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1093698828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093698825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 701028728
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &1095643036
 PrefabInstance:
   m_ObjectHideFlags: 0
