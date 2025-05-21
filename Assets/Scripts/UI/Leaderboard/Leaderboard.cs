@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System;
+using System.Linq;
 
 public class Leaderboard : NetworkBehaviour
 {
@@ -10,6 +11,7 @@ public class Leaderboard : NetworkBehaviour
     [SerializeField] private LeaderboardEntityDisplay leaderboardEntityPrefab;
 
     private NetworkList<LeaderboardEntityState> leaderboardEntities;
+    private List<LeaderboardEntityDisplay> leaderboardEntityDisplays = new List<LeaderboardEntityDisplay>();
 
     private void Awake()
     {
@@ -90,9 +92,28 @@ public class Leaderboard : NetworkBehaviour
         switch (changeEvent.Type)
         {
             case NetworkListEvent<LeaderboardEntityState>.EventType.Add:
-                Instantiate(leaderboardEntityPrefab, leaderboardEntityHolder);
+                if (!leaderboardEntityDisplays.Any(x => x.ClientId == changeEvent.Value.ClientId))
+                {
+                    LeaderboardEntityDisplay leaderboardEntity = Instantiate(leaderboardEntityPrefab, leaderboardEntityHolder);
+                    leaderboardEntity.Initialise(changeEvent.Value);
+                    leaderboardEntityDisplays.Add(leaderboardEntity);
+                }
                 break;
             case NetworkListEvent<LeaderboardEntityState>.EventType.Remove:
+                LeaderboardEntityDisplay displayToRemove = leaderboardEntityDisplays.FirstOrDefault(x => x.ClientId == changeEvent.Value.ClientId);
+                if (displayToRemove != null)
+                {
+                    displayToRemove.transform.SetParent(null);
+                    leaderboardEntityDisplays.Remove(displayToRemove);
+                    Destroy(displayToRemove.gameObject);
+                }
+                break;
+            case NetworkListEvent<LeaderboardEntityState>.EventType.Value:
+                LeaderboardEntityDisplay displayToUpdate = leaderboardEntityDisplays.FirstOrDefault(x => x.ClientId == changeEvent.Value.ClientId);
+                if (displayToUpdate != null)
+                {
+                    displayToUpdate.UpdateCoins(changeEvent.Value.Coins);
+                }
                 break;
         }
     }
