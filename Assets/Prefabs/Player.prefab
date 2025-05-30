@@ -957,7 +957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4136163740
+  GlobalObjectIdHash: 498223428
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -1156,15 +1156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e02b00fae13054eea9e626fd4c097fde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: {fileID: 6792026141389527389}
-  bountyCoinPrefab: {fileID: 7201570090483194916, guid: c81e841e78378430cb428c470cb13f87, type: 3}
-  bountyCoinSpread: 3
-  bountyPercentageOnDeath: 50
-  bountyCoinCount: 10
-  minBountyCoinValue: 5
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 1
   TotalCoins:
     m_InternalValue: 0
 --- !u!114 &4418290593917485271
