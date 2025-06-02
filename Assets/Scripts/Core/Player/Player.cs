@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Cinemachine;
 using Unity.Collections;
+using UnityEngine.UI;
 using System;
 
 public class Player : NetworkBehaviour
@@ -12,8 +13,11 @@ public class Player : NetworkBehaviour
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [field: SerializeField] public Health Health { get; private set; }
     [field: SerializeField] public CoinWallet Wallet { get; private set; }
+    [SerializeField] private SpriteRenderer minimapIconRenderer;
+
     [Header("Settings")]
     [SerializeField] private int cameraPriority = 15;
+    [SerializeField] private Color ownerColor = Color.blue;
 
     public NetworkVariable<FixedString32Bytes> PlayerName = new NetworkVariable<FixedString32Bytes>();
     public static event Action<Player> OnPlayerSpawned;
@@ -30,6 +34,7 @@ public class Player : NetworkBehaviour
         if (IsOwner)
         {
             virtualCamera.Priority = cameraPriority;
+            minimapIconRenderer.color = ownerColor;
         }
     }
     public override void OnNetworkDespawn()
