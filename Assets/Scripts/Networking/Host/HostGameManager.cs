@@ -24,7 +24,7 @@ public class HostGameManager : IDisposable
     private const int MaxConnections = 20;
     public async Task StartHostAsync()
     {
-        try 
+        try
         {
             allocation = await Relay.Instance.CreateAllocationAsync(MaxConnections);
         }
@@ -33,7 +33,7 @@ public class HostGameManager : IDisposable
             Debug.LogError(e);
             return;
         }
-        try 
+        try
         {
             joinCode = await Relay.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log(joinCode);
@@ -53,7 +53,7 @@ public class HostGameManager : IDisposable
             lobbyOptions.IsPrivate = false;
             lobbyOptions.Data = new Dictionary<string, DataObject>
             {
-                { "JoinCode", 
+                { "JoinCode",
                     new DataObject(
                         visibility: DataObject.VisibilityOptions.Member,
                         value: joinCode
@@ -72,7 +72,7 @@ public class HostGameManager : IDisposable
         }
 
         NetworkServer = new NetworkServer(NetworkManager.Singleton);
-         UserData userData = new UserData
+        UserData userData = new UserData
         {
             userName = PlayerPrefs.GetString(NameSelector.PlayerNameKey, "Missing Name"),
             userAuthId = AuthenticationService.Instance.PlayerId
@@ -80,8 +80,9 @@ public class HostGameManager : IDisposable
         string payload = JsonUtility.ToJson(userData);
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
-        
+
         NetworkManager.Singleton.StartHost();
+        NetworkServer.OnClientLeft += HandleClientLeft;
         NetworkManager.Singleton.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
     }
     public string GetJoinCode()
@@ -98,12 +99,17 @@ public class HostGameManager : IDisposable
             yield return delay;
         }
     }
-    public async void Dispose()
+    public void Dispose()
+    {
+        Shutdown();
+    }
+
+    public async void Shutdown()
     {
         HostSingleton.Instance.StopCoroutine(nameof(HeartBeatLobby));
         if (!string.IsNullOrEmpty(lobbyId))
         {
-            try 
+            try
             {
                 await Lobbies.Instance.DeleteLobbyAsync(lobbyId);
             }
@@ -113,6 +119,19 @@ public class HostGameManager : IDisposable
             }
             lobbyId = string.Empty;
         }
+        NetworkServer.OnClientLeft -= HandleClientLeft;
         NetworkServer?.Dispose();
+    }
+
+    private async void HandleClientLeft(string authId)
+    {
+        try
+        {
+            await LobbyService.Instance.RemovePlayerAsync(lobbyId, authId);
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.LogError(e);
+        }
     }
 }

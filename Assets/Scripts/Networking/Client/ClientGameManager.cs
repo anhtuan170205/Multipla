@@ -59,10 +59,16 @@ public class ClientGameManager : IDisposable
         byte[] payloadBytes = System.Text.Encoding.UTF8.GetBytes(payload);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         NetworkManager.Singleton.StartClient();
-    }   
+    }
+
+    public void Disconnect()
+    {
+        networkClient.Disconnect();
+    }
+
     public void Dispose()
     {
         networkClient?.Dispose();
-        
     }
+
 }
